@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meteion\Utils\Business;
 
 use Doctrine\DBAL\ParameterType;
@@ -62,7 +64,23 @@ class Client
     ];
 
     /**
-     * Returns a database-compliant name.
+     * Tries to extract a valid CSV name based on a client column name.
+     */
+    public static function getFileName(string $name)
+    {
+        foreach (array_keys(self::SPECIAL_CHARS_MAPPING) as $filter) {
+            $parts = explode($filter, $name);
+
+            if (count($parts) > 1) {
+                return $parts[0];
+            }
+        }
+
+        return $name;
+    }
+
+    /**
+     * Returns a valid column name.
      */
     public static function getColumnName(int $index, string $name): string
     {
@@ -84,19 +102,9 @@ class Client
         return Common::toSnakeCase($name);
     }
 
-    public static function getFileName(string $name)
-    {
-        foreach (array_keys(self::SPECIAL_CHARS_MAPPING) as $filter) {
-            $parts = explode($filter, $name);
-
-            if (count($parts) > 1) {
-                return $parts[0];
-            }
-        }
-
-        return $name;
-    }
-
+    /**
+     * Gets a "Column" object depending on the data.
+     */
     public static function getColumn(array $columnNames, int $index, string $value): Column
     {
         $columnName = $columnNames[$index];
@@ -126,6 +134,9 @@ class Client
         throw new \LogicException('Type not found.');
     }
 
+    /**
+     * Gets a "Data" object depending on the data.
+     */
     public static function getData(int $index, string $value): Data
     {
         switch ($value) {
@@ -194,7 +205,7 @@ class Client
     {
         return max(array_map(function (array $row) {
             return max(array_map(function ($item) {
-                return strlen($item->value);
+                return strlen(strval($item->value));
             }, $row));
         }, $rows));
     }

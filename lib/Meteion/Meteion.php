@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meteion;
 
 use Meteion\Model\File;
@@ -32,6 +34,9 @@ class Meteion
         $this->worker = new Worker($connection);
     }
 
+    /**
+     * Starts creating tables from CSV files.
+     */
     public function run(): void
     {
         $files = Client::getFiles($this->clientPath);
@@ -53,6 +58,9 @@ class Meteion
         $this->processSubfolders();
     }
 
+    /**
+     * Processes each CSV file and creates the associated table.
+     */
     public function process(File $file): bool
     {
         $rows = Client::getContent($file->path);
@@ -112,7 +120,7 @@ class Meteion
     }
 
     /**
-     * Creates all the tables defined by the sub-folders. Each table share the same format (key, 0, 1).
+     * Creates all the tables defined by the subfolders. Each table share the same format (key, 0, 1).
      */
     public function processSubfolders()
     {

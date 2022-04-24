@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meteion;
 
 use Doctrine\DBAL\ParameterType;
@@ -35,6 +37,9 @@ class Worker
         $this->builder = new SchemaBuilder($connection);
     }
 
+    /**
+     * Creates a "Table" object built based to the processed data and persists it.
+     */
     public function persist(string $file): void
     {
         $table = new Table($file);
@@ -61,6 +66,9 @@ class Worker
         $this->reset();
     }
 
+    /**
+     * Links the foreign keys of two given tables.
+     */
     public function linkForeignKeys($tableFromName, $tableToName, $index): bool
     {
         $vanilla = $this->builder->getTable($tableFromName);
@@ -106,6 +114,11 @@ class Worker
         return $this->builder->diffTable($vanilla, $tableFrom);
     }
 
+    /**
+     * Creates a special table based on the files contained in one of the client's subfolders.
+     * e.g. All CSV files in the "quest" folder will be inserted in a single table and linked by an internal identifier.
+     * Doing this avoids having thousands of tables.
+     */
     public function createSubTable(string $name, array $files): bool
     {
         $data = [];
@@ -155,6 +168,9 @@ class Worker
         return false;
     }
 
+    /**
+     * Returns all the valid column names of a CSV file.
+     */
     public function setColumnNames(array $values): void
     {
         $this->columnNames = array_map(function ($value, $index) {
@@ -162,6 +178,9 @@ class Worker
         }, $values, array_keys($values));
     }
 
+    /**
+     * Gets all the "Column" objects of a CSV file.
+     */
     public function setColumns(array $values): void
     {
         $this->columns = array_map(function ($value, $index) {
@@ -169,10 +188,13 @@ class Worker
         }, $values, array_keys($values));
     }
 
+    /**
+     * Processes all the data in a row and creates the associated "Data" objects.
+     */
     public function setRows(array $values): void
     {
         $this->rows[] = array_map(function ($value, $index) use (&$toString) {
-            // some primary keys are not integers, but strings
+            // some primary keys in the client are not integers, but strings
             if (0 === $index && Client::isFloat($value)) {
                 if (count($this->columns) > 1) {
                     $this->columns[0]->type = Types::STRING;
@@ -189,10 +211,21 @@ class Worker
     private function removeInvalidColumnId(string $tableFrom, string $tableTo, string $column): int
     {
         return $this->builder->execute(
-            sprintf('UPDATE "%s" SET "%s" = NULL WHERE "%s" IN (SELECT DISTINCT "%s" FROM "%s" WHERE "%s" NOT IN (SELECT pk FROM "%s"))', $tableFrom, $column, $column, $column, $tableFrom, $column, $tableTo)
+            sprintf('UPDATE "%s" SET "%s" = NULL WHERE "%s" IN (SELECT DISTINCT "%s" FROM "%s" WHERE "%s" NOT IN (SELECT pk FROM "%s"))',
+                $tableFrom,
+                $column,
+                $column,
+                $column,
+                $tableFrom,
+                $column,
+                $tableTo
+            )
         );
     }
 
+    /**
+     * Resets the worker data.
+     */
     public function reset(): void
     {
         $this->columnNames = [];

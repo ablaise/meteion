@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Meteion;
 
 use Doctrine\DBAL\Connection;
