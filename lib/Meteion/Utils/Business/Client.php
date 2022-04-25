@@ -139,34 +139,35 @@ class Client
      */
     public static function getData(int $index, string $value): Data
     {
-        switch ($value) {
-            case '':
-                return new Data(ParameterType::STRING, '');
-            case '0':
-                if (self::isFloat($value)) {
-                    return new Data(ParameterType::STRING, $value);
-                }
-
-                if (0 === $index) {
-                    return new Data(ParameterType::INTEGER, $value);
-                }
-
-                return new Data(ParameterType::NULL, 'null');
-            case 'True':
-                return new Data(ParameterType::BOOLEAN, 'true');
-            case 'False':
-                return new Data(ParameterType::BOOLEAN, 'false');
-            default:
-                if (self::isFloat($value)) {
-                    return new Data(ParameterType::STRING, $value);
-                }
-
-                if (is_numeric($value)) {
-                    return new Data(ParameterType::INTEGER, (int) $value);
-                }
-
-                return new Data(ParameterType::STRING, $value);
+        if (0 === $index) {
+            return new Data(ParameterType::INTEGER, $value);
         }
+
+        if ('' === $value) {
+            return new Data(ParameterType::STRING, '');
+        }
+
+        if (self::isFloat($value)) {
+            return new Data(ParameterType::STRING, $value);
+        }
+
+        if ('0' === $value) {
+            return new Data(ParameterType::NULL, 'null');
+        }
+
+        if ('True' === $value) {
+            return new Data(ParameterType::BOOLEAN, 'true');
+        }
+
+        if ('False' === $value) {
+            return new Data(ParameterType::BOOLEAN, 'false');
+        }
+
+        if (is_numeric($value)) {
+            return new Data(ParameterType::INTEGER, (int) $value);
+        }
+
+        return new Data(ParameterType::STRING, $value);
     }
 
     /**

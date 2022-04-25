@@ -1,5 +1,6 @@
 {
     "name": "ablaise/meteion",
+    "description": "Meteion is a straightforward PHP tool that loads FFXIV client data into a relational database.",
     "type": "library",
     "license": "MIT",
     "minimum-stability": "stable",
