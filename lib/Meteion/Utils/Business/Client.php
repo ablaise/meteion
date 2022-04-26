@@ -16,6 +16,9 @@ use Symfony\Component\Serializer\Serializer;
 
 class Client
 {
+    public const CSV_NAME = 0;
+    public const CSV_TYPE = 1;
+
     public const PK = 'pk';
 
     public const EXTRA_TABLE_NAME = 'metadata';
