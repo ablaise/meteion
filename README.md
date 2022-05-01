@@ -58,7 +58,7 @@ Please note that this may take some time depending on your server configuration.
 
 # Symfony Integration
 
-See [MeteionBundle](https://github.com/ablaise/meteion).
+See [MeteionBundle](https://github.com/ablaise/meteion-bundle).
 
 # Known issues
 
