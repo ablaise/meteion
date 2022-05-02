@@ -4,7 +4,6 @@
     "homepage": "https://github.com/ablaise/meteion",
     "type": "library",
     "license": "MIT",
-    "minimum-stability": "stable",
     "authors": [
         {
             "name": "Alexis BLAISE",
