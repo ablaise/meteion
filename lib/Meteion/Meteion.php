@@ -253,7 +253,7 @@ class Meteion
             $table->addColumn('reference_id', Types::INTEGER);
             $table->addColumn('reference_table', Types::STRING);
             $table->addColumn('column1', Types::STRING);
-            $table->addColumn('column2', Types::STRING, ['length' => pow(2, 12)]);
+            $table->addColumn('column2', Types::STRING, ['length' => pow(2, 13)]);
             $table->setPrimaryKey(['pk']);
 
             $this->builder->create($table, true);
